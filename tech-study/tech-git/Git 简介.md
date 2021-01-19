@@ -197,52 +197,69 @@ sequenceDiagram
 
 Git 分支本质上仅仅是指向提交对象的可变指针
 
+- 查看本地当前所有分支
+
+  ```
+  git branch
+  ```
+
 - 创建分支
 
-- - git branch      <newbranch>
+  ```
+  git branch test
+  ```
 
 - 查看HEAD指针所在分支
 
-- - git log   --oneline --decorate
+  ```
+  git log --oneline --decorate
+  ```
 
 - 切换分支
 
-- - git checkout      <branchname>
+  ```
+  git checkout test
+  ```
 
 - 创建新分支并切换过去
 
-- - git checkout -b      <newbranch>
+  ```
+  git checkout -b dev
+  ```
 
-- 合并分支到当前分支
+- 合并分支到当前分支，合并的代码为commit后的代码
 
-- - git merge      hotfix
-
-- 删除分支
-
-- - git branch -d      hotfix
+  ```
+  git merge dev
+  ```
 
 - 当合并分支时有冲突
 
-- - 编辑冲突文件
-  - git   add 修改后的冲突文件
-  - git   commit 
+  ```
+  vim hello.md #编辑冲突文件
+  git add hello.md 
+  git commit -m 'merge modify'
+  ```
 
-- 查看本地当前所有分支
+- 删除分支
 
-- - git branch
-  - git  branch -v 显示分支最后一次提交的信息
-
-- 查看哪些分支已合并到当前分支
-
-- - git branch      --merged
-
-
+  ```
+  git branch -d dev
+  ```
 
 ## Git + IDEA 使用
 
-
+- 代码提交
+- 切换分支
+- 冲突解决
+- code review
 
 ## 一些使用经验
+
+- 常用分支 master、test、dev
+- 生产环境bug  xxx_fix
+- 功能分支合并到master, 及时合并到每个分支
+- 多人开发
 
 
 
