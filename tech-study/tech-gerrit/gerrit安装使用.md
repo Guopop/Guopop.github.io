@@ -163,7 +163,7 @@ ssh-keygen -t rsa -b 4096 -C "Setting SSH keys in Gerrit"
 cat ~/.ssh/id_ed25519.pub # 复制密钥
 ```
 
-![image-20210223103410512](D:\file\md_file\guopop.github.io\images\image-20210223103410512.png)
+![image-20210223103410512](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210223103410512.png)
 
 
 
@@ -171,11 +171,11 @@ cat ~/.ssh/id_ed25519.pub # 复制密钥
 
 ##### 创建项目
 
-![image-20210223103722376](D:\file\md_file\guopop.github.io\images\image-20210223103722376.png)
+![image-20210223103722376](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210223103722376.png)
 
 ##### 克隆项目到本地
 
-![image-20210224165944652](D:\file\md_file\guopop.github.io\images\image-20210224165944652.png)
+![image-20210224165944652](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210224165944652.png)
 
 ```shell
 # admin为项目所有者  testdemo为项目名称
@@ -193,7 +193,7 @@ git push origin HEAD:refs/for/master
 
 ##### 查看修改内容是否提交到Gerrit
 
-![image-20210223105020371](D:\file\md_file\guopop.github.io\images\image-20210223105020371.png)
+![image-20210223105020371](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210223105020371.png)
 
 ##### 查看修改内容是否提交到Git仓库
 
@@ -205,17 +205,17 @@ git clone ssh://admin@39.105.47.81:29418/testdemo
 
 ##### 查看修改内容
 
-![image-20210223105557327](D:\file\md_file\guopop.github.io\images\image-20210223105557327.png)
+![image-20210223105557327](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210223105557327.png)
 
 ##### 对代码进行建议
 
 > +2 直接可以进行提交
 
-![image-20210223105822964](D:\file\md_file\guopop.github.io\images\image-20210223105822964.png)
+![image-20210223105822964](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210223105822964.png)
 
 ##### 提交代码
 
-![image-20210223110011734](D:\file\md_file\guopop.github.io\images\image-20210223110011734.png)
+![image-20210223110011734](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210223110011734.png)
 
 发现代码已经合并
 
@@ -256,17 +256,17 @@ htpasswd -b /etc/httpd/passwords review review
 
 ##### 创建用户组
 
-![image-20210224163333095](D:\file\md_file\guopop.github.io\images\image-20210224163333095.png)
+![image-20210224163333095](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210224163333095.png)
 
 ##### 添加用户到用户组
 
-![image-20210224163608031](D:\file\md_file\guopop.github.io\images\image-20210224163608031.png)
+![image-20210224163608031](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210224163608031.png)
 
 ##### 设置项目的reviewer
 
-![image-20210224174021896](D:\file\md_file\guopop.github.io\images\image-20210224174021896.png)
+![image-20210224174021896](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210224174021896.png)
 
-![image-20210224174050449](D:\file\md_file\guopop.github.io\images\image-20210224174050449.png)
+![image-20210224174050449](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210224174050449.png)
 
 ##### 代码review
 
@@ -284,17 +284,17 @@ htpasswd -b /etc/httpd/passwords review review
 
 ##### 设置所有项目不能git push origin master
 
-![image-20210224180420286](D:\file\md_file\guopop.github.io\images\image-20210224180420286.png)
+![image-20210224180420286](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210224180420286.png)
 
 ##### 设置用户组有合并代码权限 
 
-![image-20210224180700951](D:\file\md_file\guopop.github.io\images\image-20210224180700951.png)
+![image-20210224180700951](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210224180700951.png)
 
 ## 遇到相关问题解决方案
 
 ##### 在git push时未成功推送
 
-![image-20210223110443543](D:\file\md_file\guopop.github.io\images\image-20210223110443543.png)
+![image-20210223110443543](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210223110443543.png)
 
 ```shell
 # 执行提示内容
@@ -307,7 +307,7 @@ git push origin HEAD:refs/for/master
 
 ##### 在git commit时报错
 
-![image-20210223111255787](D:\file\md_file\guopop.github.io\images\image-20210223111255787.png)
+![image-20210223111255787](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210223111255787.png)
 
 安装git 2.0之后版本
 

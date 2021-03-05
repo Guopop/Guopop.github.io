@@ -53,7 +53,7 @@ sequenceDiagram
 
 - git文件流
 
-  ![image-20210104094417503](C:\Users\10078\AppData\Roaming\Typora\typora-user-images\image-20210104094417503.png)
+  ![image-20210104094417503](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210104094417503.png)
 
 - 检查当前文件状态
 
