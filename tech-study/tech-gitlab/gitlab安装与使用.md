@@ -349,3 +349,84 @@ deploy
 ```
 
 对应gitlab-ci.yml文件中的start.sh
+
+## 集成P3C-PMD代码规范检查
+
+```
+mkdir sonarqube
+cd sonarqube
+vim docker-compose.yml
+```
+
+```yaml
+version: '3'
+services:
+  postgres:
+    image: postgres
+    restart: always
+    container_name: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - /opt/postgres/postgresql/:/var/lib/postgresql
+      - /opt/postgres/data/:/var/lib/postgresql/data
+    environment:
+      TZ: Asia/Shanghai
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+
+  sonar:
+    image: sonarqube:8.4-community
+    container_name: sonarqube
+    depends_on:
+      - postgres
+    volumes:
+      - /opt/sonarqube/extensions:/opt/sonarqube/extensions
+      - /opt/sonarqube/logs:/opt/sonarqube/logs
+      - /opt/sonarqube/data:/opt/sonarqube/data
+      - /opt/sonarqube/conf:/opt/sonarqube/conf
+    ports:
+      - 9000:9000
+    environment:
+      SONARQUBE_JDBC_USERNAME: sonar
+      SONARQUBE_JDBC_PASSWORD: sonar
+      SONARQUBE_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
+```
+
+![image-20210308181803808](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210308181803808.png)
+
+安装成功
+
+![image-20210308181927911](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210308181927911.png)
+
+重启，显示中文
+
+![image-20210309101542263](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210309101542263.png)
+
+创建sonarqube项目
+
+![image-20210309101723856](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210309101723856.png)
+
+创建令牌
+
+![image-20210309101755634](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210309101755634.png)
+
+选择java maven 复制mvn命令
+
+```yaml
+sonar:
+  stage: sonar
+  tags:
+    - maven
+  script:
+    - echo "===============开始代码检查================"
+    - mvn sonar:sonar -Dsonar.projectKey=hellodemo -Dsonar.host.url=http://39.105.47.81:9000 -Dsonar.login=7c8174f48e315bcbae1577fbe703920e3bb020c8
+```
+
+配置到.gitlab-ci.yml中 提交代码流水线通过
+
+打开sonarqube项目地址， 显示代码经过检查
+
+![image-20210309102141543](D:\file\md_file\guopop.github.io\images\image-20210309102141543.png)
+
