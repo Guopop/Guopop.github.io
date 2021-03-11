@@ -1,0 +1,20 @@
+version: '3' 
+services: 
+  web: 
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always 
+    hostname: '39.105.47.81' 
+    container_name: 'gitlab' 
+    environment: 
+      GITLAB_OMNIBUS_CONFIG: | 
+        external_url 'http://39.105.47.81:8880' 
+        gitlab_rails['gitlab_shell_ssh_port'] = 8822 
+        gitlab_rails['time_zone'] = 'Asia/Shanghai' 
+    ports: 
+      - '8880:8880' 
+      - '8443:443' 
+      - '8822:22' 
+    volumes: 
+      - '/root/gitlab/config:/etc/gitlab' 
+      - '/root/gitlab/logs:/var/log/gitlab' 
+      - '/root/gitlab/data:/var/opt/gitlab'

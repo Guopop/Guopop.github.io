@@ -3,7 +3,7 @@
 ## Docker 安装
 
 ```shell
-yum update
+yum update -y
 yum install -y yum-utils
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 yum install -y docker-ce
@@ -172,7 +172,6 @@ docker run -d --name gitlab-runner --restart always \
 	-v /srv/gitlab-runner/config:/etc/gitlab-runner \
     -v /var/run/docker.sock:/var/run/docker.sock \
     gitlab/gitlab-runner:latest
-
 ```
 
 ![image-20210304092215715](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210304092215715.png)
@@ -355,37 +354,49 @@ deploy
 ```
 mkdir sonarqube
 cd sonarqube
-vim docker-compose.yml
+docker pull postgres
+docker run -d --name postgres -p 5432:5432 -e POSTGRES_USER=sonar -e POSTGRES_PASSWORD=sonar -v /root/postgres/postgresql/:/var/lib/postgresql -v /root/postgres/data/:/var/lib/postgresql/data postgres
 ```
 
-```yaml
+```sh
 version: '3'
 services:
   postgres:
-    image: postgres
-    restart: always
-    container_name: postgres
-    ports:
-      - 5432:5432
-    volumes:
-      - /opt/postgres/postgresql/:/var/lib/postgresql
-      - /opt/postgres/data/:/var/lib/postgresql/data
+  	image: postgres
+  	restart: always
+  	container_name: postgres
+  	ports:
+  	  - 5432:5432
+  	volumes:
+      - /root/postgres/postgresql/:/var/lib/postgresql
+      - /root/postgres/data/:/var/lib/postgresql/data
     environment:
       TZ: Asia/Shanghai
       POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar
       POSTGRES_DB: sonar
+```
 
+![image-20210310085439508](D:\file\md_file\guopop.github.io\images\image-20210310085439508.png)
+
+安装成功postgresql
+
+```sh
+docker pull sonarqube:7.7-community
+docker run -d --name sonarqube -p 9000:9000 --link postgres -e SONARQUBE_JDBC_USERNAME=sonar -e SONARQUBE_JDBC_PASSWORD=sonar -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar -v 
+```
+
+```sh
+version: '3'
+services:
   sonar:
-    image: sonarqube:8.4-community
+    image: sonarqube:7.7-community
     container_name: sonarqube
-    depends_on:
-      - postgres
     volumes:
-      - /opt/sonarqube/extensions:/opt/sonarqube/extensions
-      - /opt/sonarqube/logs:/opt/sonarqube/logs
-      - /opt/sonarqube/data:/opt/sonarqube/data
-      - /opt/sonarqube/conf:/opt/sonarqube/conf
+      - /root/sonarqube/extensions:/opt/sonarqube/extensions
+      - /root/sonarqube/logs:/opt/sonarqube/logs
+      - /root/sonarqube/data:/opt/sonarqube/data
+      - /root/sonarqube/conf:/opt/sonarqube/conf
     ports:
       - 9000:9000
     environment:
@@ -394,9 +405,25 @@ services:
       SONARQUBE_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
 ```
 
-![image-20210308181803808](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210308181803808.png)
+启动sonarqube问题解决
 
-安装成功
+```sh
+vim /etc/sysctl.conf
+```
+
+添加
+
+```
+vm.max_map_count=262144
+```
+
+配置生效
+
+```sh
+sysctl -p
+```
+
+
 
 ![image-20210308181927911](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210308181927911.png)
 

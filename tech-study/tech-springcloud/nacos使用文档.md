@@ -19,7 +19,7 @@ docker run -d -p 8848:8848 --env MODE=standalone  --name nacos  nacos/nacos-serv
 
 访问http://localhost:8848/nacos  登录成功 nacos/nacos
 
-## nacos config 配置
+## Nacos Config 入门配置
 
 ![image-20210309183018638](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210309183018638.png)
 
@@ -76,3 +76,166 @@ public class NacosConfigApplication {
 ![image-20210309183316429](D:\file\md_file\guopop.github.io\images\image-20210309183316429.png)
 
 配置成功！！！
+
+## Nacos Config 实现 Bean 动态刷新
+
+### @RefreshScope + @Value实现
+
+```java
+package me.guopop.nacosconfig;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.PostConstruct;
+
+@RestController
+@RefreshScope
+@Slf4j
+@SpringBootApplication
+public class NacosConfigApplication {
+
+	@Value("${user.name}")
+	private String userName;
+
+	@Value("${user.age}")
+	private int userAge;
+
+	@PostConstruct
+	public void init() {
+		log.info("[init] user name: {}, age: {}", userName, userAge);
+	}
+
+	@GetMapping("/user")
+	public String user() {
+		return String.format("[HTTP] user name: %s, age: %d", userName, userAge);
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(NacosConfigApplication.class, args);
+	}
+}
+```
+
+访问http://localhost:8080/user
+
+![image-20210310171642356](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210310171642356.png)
+
+![image-20210310171711037](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210310171711037.png)
+
+修改配置，进行发布
+
+![image-20210310171736908](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210310171736908.png)
+
+![image-20210310171803104](D:\file\md_file\guopop.github.io\images\image-20210310171803104.png)
+
+数据得到刷新
+
+### @RefreshScope + @ConfigurationProperties 实现
+
+```java
+package me.guopop.nacosconfig;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+
+/**
+ * @author guopop
+ * @date 2021/3/10 17:26
+ */
+@Getter
+@Setter
+@RefreshScope
+@ConfigurationProperties(prefix = "user")
+public class User {
+    private String name;
+
+    private int age;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+```
+
+```java
+package me.guopop.nacosconfig;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+@EnableConfigurationProperties(User.class)
+@RestController
+@RefreshScope
+@Slf4j
+@SpringBootApplication
+public class NacosConfigApplication {
+
+	@Value("${user.name}")
+	private String userName;
+
+	@Value("${user.age}")
+	private int userAge;
+
+	@Autowired
+	private User user;
+
+	@PostConstruct
+	public void init() {
+		log.info("[init] user name: {}, age: {}", userName, userAge);
+	}
+
+	@PreDestroy
+	public void destroy() {
+		log.info("[destroy] user name: {}, age: {}", userName, userAge);
+	}
+
+	@GetMapping("/user")
+	public String user() {
+//		return String.format("[HTTP] user name: %s, age: %d", userName, userAge);
+        return "[HTTP] " + user;
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(NacosConfigApplication.class, args);
+	}
+}
+```
+
+访问http://localhost:8080/user
+
+![image-20210310173553355](D:\file\md_file\guopop.github.io\images\image-20210310173553355.png)
+
+![image-20210310173644947](D:\file\md_file\guopop.github.io\images\image-20210310173644947.png)
+
+修改配置
+
+![image-20210310173655231](D:\file\md_file\guopop.github.io\images\image-20210310173655231.png)
+
+刷新成功！！！
+
+
+
+### Nacos Config 监听实现Bean属性动态刷新
+
