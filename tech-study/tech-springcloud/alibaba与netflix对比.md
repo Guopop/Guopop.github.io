@@ -30,6 +30,7 @@ Spring Cloud 2020.0.0版本**彻底删除**掉了Netflix除Eureka外的**所有*
 | 分布式消息    |                      | RocketMQ             | RabbitMQ                  |
 | 负载均衡      | Ribbon               | Dubbo LB             | Spring Cloud LoadBalancer |
 | 分布式事务    |                      |                      | Seata                     |
+| 数据链路跟踪  |                      |                      | Sleuth                    |
 
 阿里云脚手架可以方便创建项目骨架
 

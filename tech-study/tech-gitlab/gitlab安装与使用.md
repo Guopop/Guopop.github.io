@@ -349,32 +349,30 @@ deploy
 
 对应gitlab-ci.yml文件中的start.sh
 
-## 集成P3C-PMD代码规范检查
+## 集成代码规范检查
 
 ```
-mkdir sonarqube
-cd sonarqube
-docker pull postgres
-docker run -d --name postgres -p 5432:5432 -e POSTGRES_USER=sonar -e POSTGRES_PASSWORD=sonar -v /root/postgres/postgresql/:/var/lib/postgresql -v /root/postgres/data/:/var/lib/postgresql/data postgres
+mkdir /root/postgres
+cd /root/postgres
+vim docker-compose.yml
 ```
 
 ```sh
 version: '3'
 services:
   postgres:
-  	image: postgres
-  	restart: always
-  	container_name: postgres
-  	ports:
-  	  - 5432:5432
-  	volumes:
-      - /root/postgres/postgresql/:/var/lib/postgresql
-      - /root/postgres/data/:/var/lib/postgresql/data
+    image: postgres
+    restart: always
+    container_name: postgres
+    ports:
+      - 5432:5432
     environment:
-      TZ: Asia/Shanghai
-      POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar
+      POSTGRES_USER: sonar
       POSTGRES_DB: sonar
+    volumes:
+      - $PWD/postgres.conf:/etc/postgresql/postgresql.conf
+      - $PWD/data:/var/lib/postgresql/data
 ```
 
 ![image-20210310085439508](D:\file\md_file\guopop.github.io\images\image-20210310085439508.png)
@@ -382,27 +380,29 @@ services:
 安装成功postgresql
 
 ```sh
-docker pull sonarqube:7.7-community
-docker run -d --name sonarqube -p 9000:9000 --link postgres -e SONARQUBE_JDBC_USERNAME=sonar -e SONARQUBE_JDBC_PASSWORD=sonar -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar -v 
+mkdir /root/sonarqube
+cd /root/sonarqube
+vim docker-compose.yml
 ```
 
 ```sh
 version: '3'
 services:
-  sonar:
-    image: sonarqube:7.7-community
+  sonarqube:
+    image: sonarqube:8.7-community
+    restart: always
     container_name: sonarqube
-    volumes:
-      - /root/sonarqube/extensions:/opt/sonarqube/extensions
-      - /root/sonarqube/logs:/opt/sonarqube/logs
-      - /root/sonarqube/data:/opt/sonarqube/data
-      - /root/sonarqube/conf:/opt/sonarqube/conf
     ports:
       - 9000:9000
     environment:
-      SONARQUBE_JDBC_USERNAME: sonar
-      SONARQUBE_JDBC_PASSWORD: sonar
-      SONARQUBE_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
+      "sonar.jdbc.username": sonar
+      "sonar.dbc.password": sonar
+      "sonar.jdbc.url": jdbc:postgresql://39.105.47.81:5432/sonar
+    volumes:
+      - $PWD/conf:/opt/sonarqube/conf
+      - $PWD/extensions:/opt/sonarqube/extensions
+      - $PWD/logs:/opt/sonarqube/logs
+      - $PWD/data:/opt/sonarqube/data
 ```
 
 启动sonarqube问题解决
