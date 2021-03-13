@@ -301,7 +301,6 @@ public class OpenFeignController {
 
     @GetMapping("/feign/hello/{message}")
     public String hello(@PathVariable String message) {
-        System.out.println("aaa");
         return helloService.hello(message);
     }
 }

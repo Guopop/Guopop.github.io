@@ -256,7 +256,7 @@ Git 分支本质上仅仅是指向提交对象的可变指针
 
 ## 一些使用经验
 
-- 常用分支 master、test、dev
-- 生产环境bug  xxx_fix
+- 常用分支 master、test、dev、pre
+- 生产环境bug  xxx_fix  fix-xxx, feature--
 - 功能分支合并到master, 及时合并到每个分支
 - 多人开发
