@@ -1,9 +1,10 @@
-version: "2"
+version: "3"
 services:
   nacos:
     image: nacos/nacos-server
     container_name: nacos
     environment:
+      NACOS_AUTH_ENABLE: "true"
       PREFER_HOST_MODE: hostname
       MODE: standalone
       SPRING_DATASOURCE_PLATFORM: mysql
@@ -12,7 +13,6 @@ services:
       MYSQL_SERVICE_PORT: 3306
       MYSQL_SERVICE_USER: nacos
       MYSQL_SERVICE_PASSWORD: nacos
-      NACOS_AUTH_ENABLE: true
     volumes:
       - $PWD/standalone-logs/:/home/nacos/logs
       - $PWD/init.d/:/home/nacos/init.d

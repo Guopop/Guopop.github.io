@@ -284,3 +284,54 @@ docker run -id \
 # 访问宿主机ip, index.html 页面显示 
 ```
 
+### Nacos 部署
+
+```sh
+mkdir nacos
+cd nacos
+vim docker-compose.yml
+```
+
+```yaml
+version: "3"
+services:
+  nacos:
+    image: nacos/nacos-server
+    container_name: nacos
+    environment:
+      PREFER_HOST_MODE: hostname
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: mysql
+      MYSQL_SERVICE_DB_NAME: nacos_devtest
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_USER: nacos
+      MYSQL_SERVICE_PASSWORD: nacos
+      NACOS_AUTH_ENABLE: true
+    volumes:
+      - $PWD/standalone-logs/:/home/nacos/logs
+      - $PWD/init.d/:/home/nacos/init.d
+    ports:
+      - "8848:8848"
+      - "9555:9555"
+    depends_on:
+      - mysql
+    restart: always
+  mysql:
+    container_name: mysql
+    image: nacos/nacos-mysql:8.0.16
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nacos_devtest
+      MYSQL_USER: nacos
+      MYSQL_PASSWORD: nacos
+    volumes:
+      - $PWD/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+```
+
+```sh
+docker-compose up -d
+```
+

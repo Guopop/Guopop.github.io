@@ -1,5 +1,7 @@
 # Sentinel 服务熔断和限流
 
+[Sentinel官方文档](https://sentinelguard.io/zh-cn/)
+
 我们需要针对突发的流量来进行限制，在尽可能处理 请求的同时来保障服务不被打垮，这就是流量控制。
 
 我们需要对不稳定的弱依赖服务进行 熔断降级，暂时切断不稳定调用，避免局部不稳定因素导致整体的雪崩。
@@ -18,11 +20,12 @@ Sentinel 的使用可以分为两个部分:
 
 ```sh
 mkdir sentinel
+cd sentinel
 wget https://github.com/alibaba/Sentinel/releases/download/1.8.1/sentinel-dashboard-1.8.1.jar
-nohup java -Dserver.port=8010 -Dcsp.sentinel.dashboard.server=localhost:8010 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard-1.8.1.jar &
+nohup java -Dserver.port=8010 -Dcsp.sentinel.dashboard.server=localhost:8010 -Dproject.name=sentinel-dashboard -Dsentinel.dashboard.auth.username=sxuh -Dsentinel.dashboard.auth.password=sxuh -jar sentinel-dashboard-1.8.1.jar &
 ```
 
-访问http://localhost:8080 账号/密码：sentinel/sentinel
+访问http://localhost:8010 账号/密码：sentinel/sentinel
 
 <img src="https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210313103342282.png" alt="image-20210313103342282" style="zoom:50%;" />
 
@@ -128,6 +131,98 @@ public class ProductController {
 
 sentinel 已经发现sentinel的服务资源
 
+## Spring Cloud Gateway 集成 Sentinel
+
+pom.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>gateway</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>gateway</name>
+	<description>Demo project for Spring Boot</description>
+
+	<parent>
+		<groupId>me.guopop</groupId>
+		<artifactId>mall</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-gateway</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+		</dependency>
+	</dependencies>
+</project>
+```
+
+application.yml
+
+```yaml
+server:
+  port: 8000
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 39.105.47.81:8848
+        username: nacos
+        password: nacos
+    gateway:
+      routes:
+        - id: view-service
+          uri: lb://view-service
+          predicates:
+            - Path=/view/**
+          filters:
+            - StripPrefix=1
+```
+
+启动应用
+
+访问http://39.105.47.81:8010
+
+<img src="D:\file\md_file\guopop.github.io\images\image-20210316103632341.png" alt="image-20210316103632341" style="zoom:50%;" />
+
+集成成功！！！
+
+配置一个流控规则
+
+<img src="https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210316103730331.png" alt="image-20210316103730331" style="zoom:50%;" />
+
+高速访问http://106.53.248.242:8000/view/feign/hello
+
+<img src="https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210316103850885.png" alt="image-20210316103850885" style="zoom:50%;" />
+
+发现一些请求通过，一些请求被阻断
+
 ## Sentinel 配置
 
 [Sentinel配置](https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel)
@@ -151,3 +246,14 @@ spring:
         client-ip: 106.53.248.242
 ```
 
+### 网关控制台无法显示API管理和网关流控按理
+
+无法对通过网关的请求进行流控管理
+
+原因：
+
+原来sentinel服务器存在缓存 
+
+解决方法：
+
+重启sentinel服务器即可
