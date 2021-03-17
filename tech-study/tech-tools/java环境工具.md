@@ -1,3 +1,5 @@
+
+
 ## JDK 安装 
 
 ```shell
@@ -17,6 +19,24 @@ mvn -v
 ```
 
 ![image-20210303182839534](https://guopop.oss-cn-beijing.aliyuncs.com/img/image-20210303182839534.png)
+
+[阿里云maven仓库](https://help.aliyun.com/document_detail/102512.html)
+
+```sh
+cd /opt/maven/conf
+vim settings.xml
+```
+
+在<mirrors>标签中添加
+
+```xml
+<mirror>
+    <id>aliyunmaven</id>
+    <mirrorOf>central</mirrorOf>
+    <name>阿里云公共仓库</name>
+    <url>https://maven.aliyun.com/repository/public</url>
+</mirror>
+```
 
 ## Git 安装
 
